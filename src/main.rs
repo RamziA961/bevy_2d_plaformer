@@ -1,8 +1,8 @@
 use bevy::prelude::*;
-use bevy_kira_audio::prelude::*;
 use bevy_asset_loader::loading_state::{
     config::ConfigureLoadingState, LoadingState, LoadingStateAppExt,
 };
+use bevy_kira_audio::prelude::*;
 use bevy_rapier3d::{
     plugin::{NoUserData, RapierPhysicsPlugin},
     render::RapierDebugRenderPlugin,
@@ -15,28 +15,29 @@ pub mod menu;
 pub mod ui;
 
 fn main() {
-    let default_plugins = DefaultPlugins
-        .set(
-            WindowPlugin {
-                primary_window: Some(Window {
-                    title: "2D Platformer".to_string(),
-                    ..default()
-                }),
-                ..default()
-            }
-        );
+    let default_plugins = DefaultPlugins.set(WindowPlugin {
+        primary_window: Some(Window {
+            title: "2D Platformer".to_string(),
+            ..default()
+        }),
+        ..default()
+    });
 
     let mut app = App::new();
-    app
-        .add_plugins((default_plugins, AudioPlugin))
+    app.add_plugins((default_plugins, AudioPlugin))
         .add_plugins((
-                RapierPhysicsPlugin::<NoUserData>::default(),
-                RapierDebugRenderPlugin::default(),
+            RapierPhysicsPlugin::<NoUserData>::default(),
+            RapierDebugRenderPlugin::default(),
         ));
 
+    // game and loading states
     app.init_state::<GameStateTransitionState>();
     app.init_state::<GameState>();
 
+    // general asset loading
+    ui::load_assets(&mut app);
+
+    // configure initial app states
     app.add_systems(PreStartup, pre_startup_system);
 
     app.add_loading_state(
@@ -46,7 +47,7 @@ fn main() {
     )
     .add_loading_state(
         LoadingState::new(GameStateTransitionState::Next)
-            .continue_to_state(GameStateTransitionState::Done)
+            .continue_to_state(GameStateTransitionState::Done),
     );
 
     menu::initialize_menu_systems(&mut app);
@@ -63,4 +64,3 @@ fn pre_startup_system(
     next_game_state.set(GameState::MainMenu);
     info!("Pre-startup complete");
 }
-
