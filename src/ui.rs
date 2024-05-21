@@ -16,9 +16,15 @@ pub struct FontAssetCollection {
     pub mono: Handle<Font>,
 }
 
+#[derive(Component)]
+struct RefreshableUIElement;
+
 pub fn load_assets(app: &mut App) {
     info!("Loading UI assets");
     app.init_collection::<FontAssetCollection>();
-
     info!("Loading UI assets successful");
+}
+
+pub fn initialize_systems(app: &mut App) {
+    hud::intialize_hud_systems(app);
 }

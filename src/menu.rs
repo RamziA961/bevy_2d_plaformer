@@ -17,7 +17,7 @@ pub struct MenuAssetCollection {
     pub hover_sound: Handle<KiraAudioSource>,
 }
 
-pub fn initialize_menu_systems(app: &mut App) {
+pub fn initialize_systems(app: &mut App) {
     app.add_systems(OnEnter(GameState::MainMenu), setup_menu_scene)
         .add_systems(
             StateTransition,

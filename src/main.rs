@@ -12,6 +12,7 @@ use game_state::{GameState, GameStateTransitionState};
 
 pub mod game_state;
 pub mod menu;
+pub mod player;
 pub mod ui;
 
 fn main() {
@@ -41,6 +42,7 @@ fn main() {
     app.add_systems(PreStartup, pre_startup_system);
 
     app.add_loading_state(
+        // TODO: Investigate deferring asset loading
         LoadingState::new(GameStateTransitionState::AssetLoading)
             .load_collection::<menu::MenuAssetCollection>()
             .continue_to_state(GameStateTransitionState::Next),
@@ -50,7 +52,10 @@ fn main() {
             .continue_to_state(GameStateTransitionState::Done),
     );
 
-    menu::initialize_menu_systems(&mut app);
+    menu::initialize_systems(&mut app);
+    player::initialize_systems(&mut app);
+    ui::initialize_systems(&mut app);
+    
 
     app.run()
 }
